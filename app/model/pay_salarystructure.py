@@ -22,10 +22,3 @@ class PaySalaryStructure(Base):
             # Convert Numeric to float for JSON serialization
             'BasicSalary': float(self.BasicSalary)
         }
-
-# CREATE TABLE pay_salarystructure (Id integer primary key autoincrement,
-# forDepartment BOOL,
-# dCode INT,
-# ePin TEXT,
-# effective_date DATETIME not null,
-# BasicSalary NUMERIC not null);

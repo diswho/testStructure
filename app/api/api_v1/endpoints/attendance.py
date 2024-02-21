@@ -6,7 +6,7 @@ from datetime import datetime
 
 from app.db.session import SesEXT, engEXT, SesLOC, engLOC, Base
 from app.model.employee import HREmployee
-from app.model import AttendanceTimetable,  EmployeeShift,  HREmployee,  ShiftDetails,  Shift, StatisticItem,  Punch, AttDaySummary
+from app.model import AttendanceTimetable,  EmployeeShift,  HREmployee,  ShiftDetails,  Shift, StatisticItem,  Punch, AttDaySummary, PaySalaryStructure
 
 router = APIRouter()
 
@@ -19,6 +19,7 @@ async def new_data():
         Base.metadata.create_all(bind=engLOC)
         max_ids = {
             AttendanceTimetable: sesLoc.query(func.max(AttendanceTimetable.id)).scalar(),
+            PaySalaryStructure: sesLoc.query(func.max(PaySalaryStructure.Id)).scalar(),            
             EmployeeShift: sesLoc.query(func.max(EmployeeShift.id)).scalar(),
             HREmployee: sesLoc.query(func.max(HREmployee.id)).scalar(),
             ShiftDetails: sesLoc.query(func.max(ShiftDetails.id)).scalar(),
@@ -36,9 +37,10 @@ async def new_data():
             elif table == Punch:
                 data_ext = sesExt.query(table).filter(
                     table.id > max_id, Punch.punch_time >= '2023-01-01').all()
+            elif table == PaySalaryStructure:
+                data_ext = sesExt.query(table).filter(table.Id > max_id).all()
             else:
                 data_ext = sesExt.query(table).filter(table.id > max_id).all()
-            # data_ext = sesExt.query(table).filter(table.id > max_id).all()
             for rec in data_ext:
                 sesLoc.execute(insert(table).values(rec.to_dict()))
             sesLoc.commit()
