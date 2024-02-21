@@ -4,3 +4,4 @@ __pycache__/
 *__pycache__*
 app/api/api_v1/endpoints/__pycache__/attendance.cpython-310.pyc
 app/model/__pycache__/__init__.cpython-310.pyc
+local.db-journal

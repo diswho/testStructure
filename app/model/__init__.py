@@ -7,4 +7,5 @@ from .timetable import AttendanceTimetable
 from .statistic_item import StatisticItem
 from .day_summary import AttDaySummary
 from .pay_salarystructure import PaySalaryStructure
+from .hr_department import HRDepartment
 

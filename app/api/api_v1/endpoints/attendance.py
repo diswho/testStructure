@@ -6,7 +6,7 @@ from datetime import datetime
 
 from app.db.session import SesEXT, engEXT, SesLOC, engLOC, Base
 from app.model.employee import HREmployee
-from app.model import AttendanceTimetable,  EmployeeShift,  HREmployee,  ShiftDetails,  Shift, StatisticItem,  Punch, AttDaySummary, PaySalaryStructure
+from app.model import AttendanceTimetable,  EmployeeShift,  HREmployee,  ShiftDetails,  Shift, StatisticItem,  Punch, AttDaySummary, PaySalaryStructure, HRDepartment
 
 router = APIRouter()
 
@@ -19,25 +19,28 @@ async def new_data():
         Base.metadata.create_all(bind=engLOC)
         max_ids = {
             AttendanceTimetable: sesLoc.query(func.max(AttendanceTimetable.id)).scalar(),
-            PaySalaryStructure: sesLoc.query(func.max(PaySalaryStructure.Id)).scalar(),            
             EmployeeShift: sesLoc.query(func.max(EmployeeShift.id)).scalar(),
             HREmployee: sesLoc.query(func.max(HREmployee.id)).scalar(),
+            HRDepartment: sesLoc.query(func.max(HRDepartment.id)).scalar(),
+            PaySalaryStructure: sesLoc.query(func.max(PaySalaryStructure.Id)).scalar(),
             ShiftDetails: sesLoc.query(func.max(ShiftDetails.id)).scalar(),
             Shift: sesLoc.query(func.max(Shift.id)).scalar(),
             StatisticItem: sesLoc.query(func.max(StatisticItem.id)).scalar(),
-            Punch: sesLoc.query(func.max(Punch.id)).scalar(),
             AttDaySummary: sesLoc.query(func.max(AttDaySummary.id)).scalar(),
+            Punch: sesLoc.query(func.max(Punch.id)).scalar(),
         }
         for table, max_id in max_ids.items():
             if max_id is None:
                 max_id = 0
             if table == AttDaySummary:
-                data_ext = sesExt.query(table).filter(
-                    table.id > max_id, AttDaySummary.att_date >= '2023-01-01').all()
+                max_id = sesExt.query(func.max(AttDaySummary.id).filter(AttDaySummary.att_date <= '2023-01-01')).scalar()
+                print(max_id)
+                # data_ext = sesExt.query(table).filter(table.id > max_id, AttDaySummary.att_date >= '2023-01-01').all()
             elif table == Punch:
-                data_ext = sesExt.query(table).filter(
-                    table.id > max_id, Punch.punch_time >= '2023-01-01').all()
-            elif table == PaySalaryStructure:
+                max_id = sesExt.query(func.max(Punch.id).filter(Punch.punch_time <= '2023-01-01')).scalar()
+                print(max_id)
+                # data_ext = sesExt.query(table).filter(table.id > max_id, Punch.punch_time >= '2023-01-01').all()
+            if table == PaySalaryStructure:
                 data_ext = sesExt.query(table).filter(table.Id > max_id).all()
             else:
                 data_ext = sesExt.query(table).filter(table.id > max_id).all()
