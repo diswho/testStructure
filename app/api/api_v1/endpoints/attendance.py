@@ -14,8 +14,10 @@ router = APIRouter()
 @router.get("/new_data/")
 async def new_data():
     try:
+        # Production use
         current_date = datetime.now()
         one_month_ago = current_date - timedelta(days=30)
+
         sesExt = SesEXT()
         sesLoc = SesLOC()
         Base.metadata.create_all(bind=engLOC)
