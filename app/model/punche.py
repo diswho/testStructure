@@ -31,6 +31,7 @@ class Punch(Base):
     def to_dict(self) -> Dict:
         """Converts HREmployeeExt instance to dictionary."""
         return {
+            "id": self.id,
             "employee_id": self.employee_id,
             "punch_time": self.punch_time,
             "workcode": self.workcode,

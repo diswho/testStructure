@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from sqlalchemy import text, insert
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.sql.expression import func
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from app.db.session import SesEXT, engEXT, SesLOC, engLOC, Base
 from app.model.employee import HREmployee
@@ -14,6 +14,8 @@ router = APIRouter()
 @router.get("/new_data/")
 async def new_data():
     try:
+        current_date = datetime.now()
+        one_month_ago = current_date - timedelta(days=30)
         sesExt = SesEXT()
         sesLoc = SesLOC()
         Base.metadata.create_all(bind=engLOC)
@@ -32,14 +34,14 @@ async def new_data():
         for table, max_id in max_ids.items():
             if max_id is None:
                 max_id = 0
-            if table == AttDaySummary:
-                max_id = sesExt.query(func.max(AttDaySummary.id).filter(AttDaySummary.att_date <= '2023-01-01')).scalar()
+            if table == AttDaySummary and max_id == 0:
+                max_id = sesExt.query(func.max(AttDaySummary.id).filter(
+                    AttDaySummary.att_date <= '2023-06-01')).scalar()
                 print(max_id)
-                # data_ext = sesExt.query(table).filter(table.id > max_id, AttDaySummary.att_date >= '2023-01-01').all()
-            elif table == Punch:
-                max_id = sesExt.query(func.max(Punch.id).filter(Punch.punch_time <= '2023-01-01')).scalar()
+            elif table == Punch and max_id == 0:
+                max_id = sesExt.query(func.max(Punch.id).filter(
+                    Punch.punch_time <= '2023-06-01')).scalar()
                 print(max_id)
-                # data_ext = sesExt.query(table).filter(table.id > max_id, Punch.punch_time >= '2023-01-01').all()
             if table == PaySalaryStructure:
                 data_ext = sesExt.query(table).filter(table.Id > max_id).all()
             else:
