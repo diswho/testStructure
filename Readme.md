@@ -3,9 +3,12 @@
 ```sh
 python -m venv venv
 ```
+```sh
+venv\Scripts\activate
+```
 
 ```sh
-pip install pipreqs uvicorn aiosqlite python-jose passlib python-multipart "python-jose[cryptography]" "passlib[bcrypt]" pydantic[email] fastapi sqlalchemy
+pip install pipreqs uvicorn aiosqlite python-jose passlib python-multipart "python-jose[cryptography]" "passlib[bcrypt]" pydantic[email] fastapi sqlalchemy pydantic-settings
 ```
 
 ```sh
