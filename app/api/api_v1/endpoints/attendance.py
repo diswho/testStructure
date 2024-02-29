@@ -108,3 +108,7 @@ async def raw_sql_insert():
         # Close session
         sesExt.close()
         sesLoc.close()
+
+@router.get("/department_tree/")
+async def department_tree():
+    return {"message":"Success"}
